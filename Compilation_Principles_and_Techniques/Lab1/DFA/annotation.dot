@@ -1,0 +1,15 @@
+digraph G{
+    rankdir=LR
+    node[shape = circle]
+    ANNOTATION [shape = doublecircle, fontsize = 10]
+    0 -> 11 [label = "/"]
+    11 -> 36 [label = "/"]
+    11 -> 37 [label = "*"]
+    36 -> 36 [label = "other"]
+    36 -> ANNOTATION [label = "\\n / EOF"]
+    37 -> 37 [label = "other"]
+    37 -> 38 [label = "*"]
+    38 -> 37 [label = "other"]
+    38 -> 38 [label = "*"]
+    38 -> ANNOTATION [label = "/"]
+}

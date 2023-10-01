@@ -1,0 +1,13 @@
+digraph G{
+    rankdir=LR
+    splines = line
+    node[shape = circle]
+    CHAR [shape = doublecircle, fontsize = 10]
+    ERROR [shape = doublecircle, label = "ERROR(21)", fontsize = 10]
+    0 -> 7 [label = "'"]
+    7 -> ERROR [label = "' / \\n / EOF "]
+    7 -> 35 [label = "other"]
+    7 -> 34 [label = "\\"]
+    34 -> 35 [label = "legal escape characters"]
+    35 -> CHAR [label = "'"]
+}

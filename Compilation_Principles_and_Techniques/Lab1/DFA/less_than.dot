@@ -1,0 +1,12 @@
+digraph G{
+    rankdir=LR
+    node[shape = circle]
+    RELATION_OPERATOR [shape = doublecircle, fontsize = 10]
+    ASSIGN_OPERATOR [shape = doublecircle, fontsize = 10]
+    BITWISE_OPERATOR [shape = doublecircle, fontsize = 10]
+    0 -> 16 [label = "<"]
+    16 -> 39 [label = "<"]
+    16 -> RELATION_OPERATOR [label = "= / other"]
+    39 -> ASSIGN_OPERATOR [label = "="]
+    39 -> BITWISE_OPERATOR [label = "other"]
+}

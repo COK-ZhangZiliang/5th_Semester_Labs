@@ -1,0 +1,7 @@
+digraph G{
+    rankdir=LR
+    node[shape = circle]
+    ERROR [shape = doublecircle, label = "ERROR(21)", fontsize = 10]
+    ERROR -> ERROR [label = "other"]
+    ERROR -> 0 [label = "',' / ' ' / '\\t' / '\\n' / ';' / EOF"]
+}
