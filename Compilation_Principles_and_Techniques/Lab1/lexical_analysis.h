@@ -23,13 +23,13 @@ enum ErrorType
  * 
  * @param fin 输入文件流 
  * @param char_num 读入字符数
- * @param line_num 当前行数
+ * @param line 当前行数
  * @param col 当前列数
  * @param token_streams 记号流
  * @param id_table 标识符表
  * @param str_table 字符串表
  */
-void lexical_analysis(ifstream &fin, int &char_num, int &line_num, int &col, vector<Token> &token_streams, vector<string> &id_table, vector<string> &str_table);
+void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<Token> &token_streams, vector<string> &id_table, vector<string> &str_table);
 
 /**
  * @brief 判断是否为字母
@@ -53,10 +53,10 @@ bool is_digit(char c);
  * @param type 记号类型
  * @param id_table 标识符表
  * @param str_table 字符串表 
- * @param line_num 当前行数
+ * @param line 当前行数
  * @param col 当前列数
  */
-void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line_num, const int col);
+void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line, const int col);
 
 /**
  * @brief 判断是否为关键字，若是则返回关键词的下标，否则返回-1
@@ -107,10 +107,10 @@ void go_back(ifstream &fin, int &char_num, int &col);
  * @brief 输出错误信息
  * 
  * @param error_type 错误类型
- * @param line_num 当前行数
+ * @param line 当前行数
  * @param col 当前列数
  * @param buffer 错误内容 
  */
-void error(ErrorType error_type, int line_num, int col, const string buffer);
+void error(ErrorType error_type, int line, int col, const string buffer);
 
 #endif // LEICAL_ANALYSIS_H
