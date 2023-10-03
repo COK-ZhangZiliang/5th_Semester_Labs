@@ -4,24 +4,26 @@
 #include <fstream>
 #include <iostream>
 #include "token.h"
+#include <algorithm>
 
 using namespace std;
 
 // 错误类型
 enum ErrorType
 {
-    UNKNOWN_SYMBOL,
-    ILLEGAL_NUMBERS,
-    UNCLOSED_STRING,
-    UNCLOSED_CHAR,
-    ILLEGAL_ESCAPE,
-    UNCLOSED_ANNOTATION
+    UNKNOWN_SYMBOL,     // 未知符号
+    ILLEGAL_NUMBERS,    // 非法数字
+    UNCLOSED_STRING,    // 未闭合字符串
+    UNCLOSED_CHAR,      // 未闭合字符
+    EMPTY_CHAR,         // 空字符
+    ILLEGAL_ESCAPE,     // 非法转义字符
+    UNCLOSED_ANNOTATION // 未闭合注释
 };
 
 /**
  * @brief 词法分析
- * 
- * @param fin 输入文件流 
+ *
+ * @param fin 输入文件流
  * @param char_num 读入字符数
  * @param line 当前行数
  * @param col 当前列数
@@ -47,16 +49,17 @@ bool is_digit(char c);
 
 /**
  * @brief 向记号流添加记号
- * 
+ *
  * @param buffer 当前读入的记号
  * @param token_streams 记号流
  * @param type 记号类型
  * @param id_table 标识符表
- * @param str_table 字符串表 
+ * @param str_table 字符串表
  * @param line 当前行数
  * @param col 当前列数
+ * @param base 记号的基数
  */
-void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line, const int col);
+void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line, const int col, const int base);
 
 /**
  * @brief 判断是否为关键字，若是则返回关键词的下标，否则返回-1
@@ -96,20 +99,20 @@ void next_char(ifstream &fin, int &char_num, char &c, string &buffer, int &col);
 
 /**
  * @brief 回退一个字符
- * 
- * @param fin 输入文件流 
- * @param char_num 读入字符数 
+ *
+ * @param fin 输入文件流
+ * @param char_num 读入字符数
  * @param col 当前列数
  */
 void go_back(ifstream &fin, int &char_num, int &col);
 
 /**
  * @brief 输出错误信息
- * 
+ *
  * @param error_type 错误类型
  * @param line 当前行数
  * @param col 当前列数
- * @param buffer 错误内容 
+ * @param buffer 错误内容
  */
 void error(ErrorType error_type, int line, int col, const string buffer);
 

@@ -2,7 +2,7 @@ digraph G{
     rankdir = LR
     splines = ortho
     node[shape = circle]
-    DOT[shape = doublecircle, label = "DOT(4)"]
+    DOT[label = "DOT(4)"]
     INT[shape = doublecircle]
     UINT[shape = doublecircle, label = "UINT(30)"]
     ULONG[shape = doublecircle, label = "ULONG(32)"]

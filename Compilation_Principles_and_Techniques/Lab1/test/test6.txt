@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <math.h>
+
+struct node
+{
+    int a;
+    int b;
+};
+
+int main()
+{
+    int i = 123;
+    unsigned int ui = 0456u;
+    long long ll = 0x123456789abcdefll;
+
+    // this is a single line comment
+
+    float f = 1.f;
+    double d = 1.234e+10;
+    long double ld = 1.234e-10l;
+
+    struct node n1;
+    struct node *temp = &n1;
+    temp->b = 123ull;
+
+    /*
+    this is a multi-line comment
+    */
+
+    char c = '\?';
+    if (c <= '\f' && fabs(d - 123e7) > 1e-10)
+    {
+        c = '\f';
+        i++;
+        ui << 1;
+        ll <<= 2;
+        f = (i == 123) ? 1.0 : 0;
+        ld -= 1.0;
+        n1.a = 123;
+    }
+    printf("This is a string");
+    
+    return 0;
+}

@@ -1,0 +1,8 @@
+digraph G{
+    node[shape = box, style = filled]
+    token -> lexical_analysis
+    token -> output
+    lexical_analysis -> main
+    output -> main
+    main -> lexer
+}

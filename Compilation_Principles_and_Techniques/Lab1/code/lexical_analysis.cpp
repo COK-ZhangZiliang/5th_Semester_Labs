@@ -2,10 +2,11 @@
 
 void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<Token> &token_streams, vector<string> &id_table, vector<string> &str_table)
 {
-    int state = 0;
-    string buffer; // 缓冲区
-    char c;        // 当前读入字符
-    ErrorType error_type;
+    int state = 0;        // 状态
+    string buffer;        // 缓冲区
+    char c;               // 当前读入字符
+    ErrorType error_type; // 错误类型
+    int base = 10;        // 进制
     while (true)
     {
         switch (state)
@@ -51,45 +52,47 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 state = 18;
             else if (c == '!')
                 state = 19;
-            else if (c == '~')
-            {
-                buffer += c;
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
-            }
-            else if (c == '?')
-                add_token(buffer, token_streams, QUESTION_MARK, id_table, str_table, line, col);
-            else if (c == ':')
-                add_token(buffer, token_streams, COLON, id_table, str_table, line, col);
-            else if (c == ';')
-                add_token(buffer, token_streams, SEMICOLON, id_table, str_table, line, col);
-            else if (c == '[')
-                add_token(buffer, token_streams, LEFT_SQUARE_BRACKET, id_table, str_table, line, col);
-            else if (c == ']')
-                add_token(buffer, token_streams, RIGHT_SQUARE_BRACKET, id_table, str_table, line, col);
-            else if (c == '(')
-                add_token(buffer, token_streams, LEFT_PARENTHESE, id_table, str_table, line, col);
-            else if (c == ')')
-                add_token(buffer, token_streams, RIGHT_PARENTHESE, id_table, str_table, line, col);
-            else if (c == '{')
-                add_token(buffer, token_streams, LEFT_BRACE, id_table, str_table, line, col);
-            else if (c == '}')
-                add_token(buffer, token_streams, RIGHT_BRACE, id_table, str_table, line, col);
-            else if (c == ',')
-                add_token(buffer, token_streams, COMMA, id_table, str_table, line, col);
-            else if (c == ' ' || c == '\t')
-                ;
-            else if (c == '\n')
-                line++, col = 0;
-            else if (c == EOF)
-            {
-                line++;
-                char_num--;
-                return;
-            }
             else
             {
-                error_type = UNKNOWN_SYMBOL;
-                state = 21;
+                buffer += c;
+                if (c == '~')
+                    add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
+                else if (c == '?')
+                    add_token(buffer, token_streams, QUESTION_MARK, id_table, str_table, line, col, base);
+                else if (c == ':')
+                    add_token(buffer, token_streams, COLON, id_table, str_table, line, col, base);
+                else if (c == ';')
+                    add_token(buffer, token_streams, SEMICOLON, id_table, str_table, line, col, base);
+                else if (c == '[')
+                    add_token(buffer, token_streams, LEFT_SQUARE_BRACKET, id_table, str_table, line, col, base);
+                else if (c == ']')
+                    add_token(buffer, token_streams, RIGHT_SQUARE_BRACKET, id_table, str_table, line, col, base);
+                else if (c == '(')
+                    add_token(buffer, token_streams, LEFT_PARENTHESE, id_table, str_table, line, col, base);
+                else if (c == ')')
+                    add_token(buffer, token_streams, RIGHT_PARENTHESE, id_table, str_table, line, col, base);
+                else if (c == '{')
+                    add_token(buffer, token_streams, LEFT_BRACE, id_table, str_table, line, col, base);
+                else if (c == '}')
+                    add_token(buffer, token_streams, RIGHT_BRACE, id_table, str_table, line, col, base);
+                else if (c == ',')
+                    add_token(buffer, token_streams, COMMA, id_table, str_table, line, col, base);
+                else if (c == ' ' || c == '\t')
+                    ;
+                else if (c == '\n')
+                    line++, col = 0;
+                else if (c == EOF)
+                {
+                    line++;
+                    char_num--;
+                    return;
+                }
+                else
+                {
+                    buffer.erase();
+                    error_type = UNKNOWN_SYMBOL;
+                    state = 21;
+                }
             }
             break;
 
@@ -104,15 +107,16 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 // 判断是否是关键字
                 int index = is_keyword(buffer);
                 if (index != -1)
-                    add_token(buffer, token_streams, KEYWORD, id_table, str_table, line, col);
+                    add_token(buffer, token_streams, KEYWORD, id_table, str_table, line, col, base);
                 else
-                    add_token(buffer, token_streams, ID, id_table, str_table, line, col);
+                    add_token(buffer, token_streams, ID, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
 
         // 常数
         case 2:
+            base = 10;
             next_char(fin, char_num, c, buffer, col);
             if (is_digit(c))
                 state = 2;
@@ -127,7 +131,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, INT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, INT, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -152,7 +156,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, INT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, INT, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -164,8 +168,9 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 state = 22;
             else
             {
-                error_type = ILLEGAL_NUMBERS;
-                state = 21;
+                go_back(fin, char_num, col);
+                add_token(buffer, token_streams, DOT, id_table, str_table, line, col, base);
+                state = 0;
             }
             break;
 
@@ -173,9 +178,8 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
         case 5:
             char_num--;
             while (c != '\n')
-            {
                 c = fin.get();
-            }
+            go_back(fin, char_num, col);
             state = 0;
             break;
 
@@ -187,7 +191,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else if (c == '"')
             {
                 buffer.erase(0, 1);
-                add_token(buffer, token_streams, STRING, id_table, str_table, line, col);
+                add_token(buffer, token_streams, STRING, id_table, str_table, line, col, base);
                 state = 0;
             }
             else if (c == '\n' || c == EOF)
@@ -204,7 +208,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             next_char(fin, char_num, c, buffer, col);
             if (c == '\\')
                 state = 34;
-            else if (c == '\n' || c == EOF || c == '\'')
+            else if (c == '\'')
+            {
+                error_type = EMPTY_CHAR;
+                state = 21;
+            }
+            else if (c == '\n' || c == EOF)
             {
                 error_type = UNCLOSED_CHAR;
                 state = 21;
@@ -219,17 +228,17 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '+')
             {
                 buffer += c;
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -240,22 +249,22 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '-')
             {
                 buffer += c;
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else if (c == '>')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ARROW, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ARROW, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -266,12 +275,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -282,7 +291,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             else if (c == '/')
@@ -292,7 +301,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -303,12 +312,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, AGORITHM_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -319,17 +328,17 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '&')
             {
                 buffer += c;
-                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col, base);
             }
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -340,17 +349,17 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '|')
             {
                 buffer += c;
-                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col, base);
             }
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -361,12 +370,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -379,13 +388,13 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -398,13 +407,13 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -415,12 +424,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -431,12 +440,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, RELATION_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LOGICAL_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -465,18 +474,18 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 state = 23;
             else if (c == 'f' || c == 'F')
             {
-                add_token(buffer, token_streams, FLOAT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, FLOAT, id_table, str_table, line, col, base);
                 state = 0;
             }
             else if (c == 'l' || c == 'L')
             {
-                add_token(buffer, token_streams, LONGDOUBLE, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LONGDOUBLE, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, DOUBLE, id_table, str_table, line, col);
+                add_token(buffer, token_streams, DOUBLE, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -514,24 +523,25 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 state = 25;
             else if (c == 'f' || c == 'F')
             {
-                add_token(buffer, token_streams, FLOAT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, FLOAT, id_table, str_table, line, col, base);
                 state = 0;
             }
             else if (c == 'l' || c == 'L')
             {
-                add_token(buffer, token_streams, LONGDOUBLE, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LONGDOUBLE, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, DOUBLE, id_table, str_table, line, col);
+                add_token(buffer, token_streams, DOUBLE, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
 
         // 8进制常数
         case 26:
+            base = 8;
             next_char(fin, char_num, c, buffer, col);
             if (c == '.')
                 state = 22;
@@ -547,8 +557,9 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
                 state = 31;
             else
             {
-                error_type = ILLEGAL_NUMBERS;
-                state = 21;
+                go_back(fin, char_num, col);
+                add_token(buffer, token_streams, INT, id_table, str_table, line, col, base);
+                state = 0;
             }
             break;
 
@@ -570,6 +581,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
 
         // 16进制常数
         case 28:
+            base = 16;
             next_char(fin, char_num, c, buffer, col);
             if (is_digit(c) || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F')
                 state = 29;
@@ -590,7 +602,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, INT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, INT, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -604,7 +616,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, UINT, id_table, str_table, line, col);
+                add_token(buffer, token_streams, UINT, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -615,13 +627,13 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             char_num++;
             if (c == 'l' || c == 'L')
             {
-                add_token(buffer, token_streams, LONGLONG, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LONGLONG, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, LONG, id_table, str_table, line, col);
+                add_token(buffer, token_streams, LONG, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -632,13 +644,13 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             char_num++;
             if (c == 'l' || c == 'L')
             {
-                add_token(buffer, token_streams, ULONGLONG, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ULONGLONG, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, ULONG, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ULONG, id_table, str_table, line, col, base);
                 state = 0;
             }
             break;
@@ -671,7 +683,7 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '\'')
             {
                 buffer.erase(0, 1);
-                add_token(buffer, token_streams, CHAR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, CHAR, id_table, str_table, line, col, base);
                 state = 0;
             }
             else
@@ -731,12 +743,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -747,12 +759,12 @@ void lexical_analysis(ifstream &fin, int &char_num, int &line, int &col, vector<
             if (c == '=')
             {
                 buffer += c;
-                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, ASSIGN_OPERATOR, id_table, str_table, line, col, base);
             }
             else
             {
                 go_back(fin, char_num, col);
-                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col);
+                add_token(buffer, token_streams, BITWISE_OPERATOR, id_table, str_table, line, col, base);
             }
             state = 0;
             break;
@@ -776,7 +788,7 @@ bool is_digit(char c)
         return false;
 }
 
-void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line, const int col)
+void add_token(string buffer, vector<Token> &token_streams, const TokenType type, vector<string> &id_table, vector<string> &str_table, const int line, const int col, const int base)
 {
     Token token;
     token.type = type;
@@ -844,22 +856,22 @@ void add_token(string buffer, vector<Token> &token_streams, const TokenType type
             token.value.charValue = buffer[0];
         break;
     case INT:
-        token.value.intValue = stoi(buffer);
+        token.value.intValue = stoi(buffer, 0, base);
         break;
     case UINT:
-        token.value.uintValue = stoi(buffer);
+        token.value.uintValue = stoi(buffer, 0, base);
         break;
     case LONG:
-        token.value.longValue = stol(buffer);
+        token.value.longValue = stol(buffer, 0, base);
         break;
     case ULONG:
-        token.value.ulongValue = stoul(buffer);
+        token.value.ulongValue = stoul(buffer, 0, base);
         break;
     case LONGLONG:
-        token.value.longlongValue = stoll(buffer);
+        token.value.longlongValue = stoll(buffer, 0, base);
         break;
     case ULONGLONG:
-        token.value.ulonglongValue = stoull(buffer);
+        token.value.ulonglongValue = stoull(buffer, 0, base);
         break;
     case FLOAT:
         token.value.floatValue = stof(buffer);
@@ -925,7 +937,9 @@ void go_back(ifstream &fin, int &char_num, int &col)
 
 void error(ErrorType error_type, int line, int col, const string buffer)
 {
-    cout << "Error: " << line << ":" << col << ":";
+    if (col < buffer.size())
+        col = buffer.size();
+    cout << "Error: " << line + 1 << ":" << col - buffer.size() + 1 << ":";
     switch (error_type)
     {
     case UNKNOWN_SYMBOL:
@@ -942,6 +956,12 @@ void error(ErrorType error_type, int line, int col, const string buffer)
         break;
     case ILLEGAL_ESCAPE:
         cout << "Illegal escape character: ";
+        break;
+    case UNCLOSED_ANNOTATION:
+        cout << "Unclosed annotation: ";
+        break;
+    case EMPTY_CHAR:
+        cout << "Empty const char: ";
         break;
     default:
         break;

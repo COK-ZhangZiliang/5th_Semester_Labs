@@ -4,15 +4,6 @@
 #include "token.h"
 #include <iostream>
 
-int keyword_num = 0; // 关键字数
-int id_num = 0; // 标识符数
-int str_num = 0; // 字符串数
-int _char_num = 0; // 字符数
-int int_num = 0; // 整数数
-int float_num = 0; // 浮点数数
-int operator_num = 0; // 运算符数
-int other_num = 0; // 其他记号数
-
 /**
  * @brief 输出记号流
  * 

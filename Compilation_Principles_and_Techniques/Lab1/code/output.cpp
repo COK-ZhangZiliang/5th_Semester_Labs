@@ -1,11 +1,21 @@
 #include "output.h"
 
+int keyword_num = 0;  // 关键字数
+int id_num = 0;       // 标识符数
+int str_num = 0;      // 字符串数
+int _char_num = 0;    // 字符数
+int int_num = 0;      // 整数数
+int float_num = 0;    // 浮点数数
+int operator_num = 0; // 运算符数
+int other_num = 0;    // 其他记号数
+
 void output(const vector<Token> &token_streams, const vector<string> &id_table, const vector<string> &str_table, const int char_num, const int line)
 {
-    cout << "========Token Streams========" << endl;
-    for (int i = 0; i < token_streams.size(); i++)
+    cout << "========================Token Streams========================" << endl;
+    int i = 0;
+    while (i < token_streams.size())
     {
-        for (int j = 0; j < 3 && i < token_streams.size(); j++, i++)
+        for (int j = 0; j < 2 && i < token_streams.size(); i++, j++)
         {
             cout << "<" << token_streams[i].line << ":" << token_streams[i].column << ">";
             print(token_streams[i].type, token_streams[i].value, id_table, str_table);

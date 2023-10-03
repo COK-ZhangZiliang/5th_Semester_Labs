@@ -17,13 +17,16 @@ int main()
         cout << "Error opening file";
         exit(1);
     }
-    
-    int char_num = 0; // 读入字符数
-    int line = 0; // 当前行数
-    int col = 0; // 当前列数
+
+    int char_num = 0;            // 读入字符数
+    int line = 0;                // 当前行数
+    int col = 0;                 // 当前列数
     vector<Token> token_streams; // 记号流
-    vector<string> id_table; // 标识符表
-    vector<string> str_table; // 字符串表
+    vector<string> id_table;     // 标识符表
+    vector<string> str_table;    // 字符串表
     lexical_analysis(fin, char_num, line, col, token_streams, id_table, str_table);
+    cout << endl;
     output(token_streams, id_table, str_table, char_num, line);
+
+    return 0;
 }
