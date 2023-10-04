@@ -9,6 +9,7 @@ int main()
 {
     // 读入源程序文件
     string file_name;
+    cout << "Please input the source file name: ";
     cin >> file_name;
     ifstream fin;
     fin.open("test/" + file_name, ios::in);
@@ -28,5 +29,7 @@ int main()
     cout << endl;
     output(token_streams, id_table, str_table, char_num, line);
 
+    fin.close();
+    system("pause");
     return 0;
 }
