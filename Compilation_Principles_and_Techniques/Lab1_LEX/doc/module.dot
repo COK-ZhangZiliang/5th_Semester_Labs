@@ -1,0 +1,8 @@
+digraph G{
+    node[shape = box, style = filled]
+    token -> lex
+    token -> output
+    error -> lex
+    output -> lex
+    lex -> lexer
+}

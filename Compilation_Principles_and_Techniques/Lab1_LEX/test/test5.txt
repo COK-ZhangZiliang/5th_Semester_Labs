@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main()
+{
+    +, -, *, /, %, ++, --, &&, ||, !, &, |, ~, ^, << ;
+    >>, =, +=, -=, *=, /=, %=, &=, |=, ^=, <<=, >>=, == ;
+    !=, >, <, >=, <= ;
+
+    ?, :, ;
+    , [, ], (, ),
+    { , }, ., , , ->;
+
+    // this is a sigle line annotation
+
+    /* this is a multiple line annotation
+
+
+    */
+
+    ` // UNKNOWN_SYMBOL
+}
+
+/* this is an unclosed multiple line annotation

@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main()
+{
+    int _123;
+    unsigned int _abc;
+    long abc_;
+    long long abc_123;
+    unsigned long long 123abc;
+    double _double;
+    char 345;
+}
