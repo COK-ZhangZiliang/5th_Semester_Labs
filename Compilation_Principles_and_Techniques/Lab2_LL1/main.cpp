@@ -1,3 +1,9 @@
+/**
+ * @file main.cpp
+ * @author zhang ziliang (ziliangzhang@bupt.edu.cn)
+ * @brief 预测分析控制程序
+ * @date 2023-10-28
+ */
 #include "grammar.h"
 #include "table.h"
 #include <iostream>

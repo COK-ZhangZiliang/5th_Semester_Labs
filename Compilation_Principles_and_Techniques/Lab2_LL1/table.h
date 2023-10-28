@@ -1,3 +1,9 @@
+/**
+ * @file table.h
+ * @author zhang ziliang (ziliangzhang@bupt.edu.cn)
+ * @brief 预测分析表的构造和输出以及错误处理
+ * @date 2023-10-28
+ */
 #ifndef TABLE_H
 #define TABLE_H
 
@@ -24,9 +30,9 @@ public:
      */
     void error(const string &nonter) const;
 
-    unordered_map<string, unordered_map<string, vector<string>>> parsingTable;
-    unordered_set<string> nonterminals; // 非终结符号集
-    unordered_set<string> terminals;    // 终结符号集
+    unordered_map<string, unordered_map<string, vector<string>>> parsingTable; // 预测分析表
+    unordered_set<string> nonterminals;                                        // 非终结符号集
+    unordered_set<string> terminals;                                           // 终结符号集
 };
 
 #endif // TABLE_H
