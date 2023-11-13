@@ -191,6 +191,7 @@ void Grammar::BuildFirst(const string &nonterminal)
             // fir是非终结符，递归构造
             BuildFirst(fir);
             candidateFirst[nonterminal][index].insert(first[fir].begin(), first[fir].end());
+            candidateFirst[nonterminal][index].erase(eps);
             if (first[fir].find(eps) == first[fir].end()) // 若fir的FIRST集不包含epsilon，无需继续往后构造
                 break;
             cnt++;

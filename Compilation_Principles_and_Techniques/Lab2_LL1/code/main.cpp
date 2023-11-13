@@ -15,10 +15,11 @@ int main()
 {
     // 读入文法
     string file_name;
-    cout << "Please input the source file name: ";
+    cout << "Please input the grammar file name: ";
     cin >> file_name;
+    file_name = "../grammar/" + file_name;
     ifstream fin;
-    fin.open("test/" + file_name, ios::in);
+    fin.open(file_name, ios::in);
     if (!fin.is_open())
     {
         cout << "Error opening file";
@@ -33,8 +34,8 @@ int main()
 
     // 构造预测分析表
     Table table;
-    table.buildTable(grammar);
-    table.outputTable();
+    table.BuildTable(grammar);
+    table.OutputTable();
 
     // 预测分析控制程序
     while (true)
@@ -53,15 +54,19 @@ int main()
         {
             // top为栈顶元素，next为输入串的下一个符号
             string top = stk.top();
-            string next = sentence.substr(index, 1);
+            string next;
+            if (index >= sentence.length())
+                next = "";
+            else
+                next = sentence.substr(index, 1);
             if (next[0] >= '0' && next[0] <= '9')
             {
-                while(sentence[index] >= '0' && sentence[index] <= '9')
+                while (sentence[index] >= '0' && sentence[index] <= '9')
                     index++;
                 index--;
                 next = "num";
             }
-                
+
             // 如果栈顶元素为终结符号或$
             if (grammar.terminals.find(top) != grammar.terminals.end() || top == "$")
             {
@@ -72,7 +77,7 @@ int main()
                 }
                 else
                 {
-                    table.error(top);
+                    table.Error(top, next);
                     stk.pop();
                 }
             }
@@ -95,7 +100,7 @@ int main()
                 }
                 else
                 {
-                    table.error(top);
+                    table.Error(top, next);
                     if (grammar.follow[top].find(next) != grammar.follow[top].end())
                         stk.pop();
                     else

@@ -18,17 +18,19 @@ public:
      * @brief 构造预测分析表
      * @param grammar LL(1)文法
      */
-    void buildTable(const Grammar &g);
+    void BuildTable(const Grammar &g);
 
     /**
      * @brief 输出预测分析表
      */
-    void outputTable() const;
+    void OutputTable() const;
 
     /**
      * @brief  错误处理
+     * @param nonter 非终结符号
+     * @param next 输入串的下一个符号
      */
-    void error(const string &nonter) const;
+    void Error(const string &nonter, const string &next) const;
 
     unordered_map<string, unordered_map<string, vector<string>>> parsingTable; // 预测分析表
     unordered_set<string> nonterminals;                                        // 非终结符号集

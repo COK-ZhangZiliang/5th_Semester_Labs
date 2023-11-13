@@ -1,7 +1,7 @@
 #include "table.h"
 #include <iostream>
 
-void Table::buildTable(const Grammar &g)
+void Table::BuildTable(const Grammar &g)
 {
     // 拷贝文法的非终结符和终结符
     nonterminals = g.nonterminals;
@@ -14,22 +14,20 @@ void Table::buildTable(const Grammar &g)
         {
             int index = it - g.productions.at(nonter).begin();
             vector<unordered_set<string>> first = g.candidateFirst.at(nonter);
+            for (const auto &fir : first[index])
+                if (fir != eps)
+                    parsingTable[nonter][fir] = *it;
             // 候选式的FIRST集中包含epsilon
             if (first[index].find(eps) != first[index].end())
             {
                 for (const auto &fol : g.follow.at(nonter))
                     parsingTable[nonter][fol] = *it;
             }
-            else
-            {
-                for (const auto &fir : first[index])
-                    parsingTable[nonter][fir] = *it;
-            }
         }
     }
 }
 
-void Table::outputTable() const
+void Table::OutputTable() const
 {
     cout << "====Parsing Table====" << endl;
     for (auto const &nonter : nonterminals)
@@ -54,7 +52,7 @@ void Table::outputTable() const
     cout << endl;
 }
 
-void Table::error(const string &top) const
+void Table::Error(const string &top, const string &next) const
 {
     cout << "Error: ";
     switch (top[0])
@@ -63,7 +61,10 @@ void Table::error(const string &top) const
         cout << "Missing arithmetic object!" << endl;
         break;
     case 'T':
-        cout << "Missing arithmetic object!" << endl;
+        if (next == "(")
+            cout << "Missing operator!" << endl;
+        else
+            cout << "Missing arithmetic object!" << endl;
         break;
     case 'F':
         cout << "Missing arithmetic object!" << endl;

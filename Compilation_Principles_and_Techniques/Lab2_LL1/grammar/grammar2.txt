@@ -1,0 +1,7 @@
+====Nonterminal Symbols====
+S L
+======Terminal Symbols=====
+( ) , a
+=======Grammar Rules=======
+S -> ( L ) | a
+L -> L , S | S
