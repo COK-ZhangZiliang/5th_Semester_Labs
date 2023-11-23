@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -46,6 +47,14 @@ int main()
     KthSmallest(k_dist, 0, row_idx - 1, 5);
     KthSmallest(k_dist, 0, row_idx - 1, 50);
     KthSmallest(k_dist, 0, row_idx - 1, row_idx);
+
+    // 验证结果
+    cout << "Verifying..." << endl;
+    sort(k_dist, k_dist + row_idx);
+    cout << "The 1th smallest element is " << k_dist[0] << endl;
+    cout << "The 5th smallest element is " << k_dist[4] << endl;
+    cout << "The 50th smallest element is " << k_dist[49] << endl;
+    cout << "The " << row_idx << "th smallest element is " << k_dist[row_idx - 1] << endl;
 
     return 0;
 }
