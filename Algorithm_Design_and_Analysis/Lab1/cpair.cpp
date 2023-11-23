@@ -2,7 +2,6 @@
  * @file cpair.cpp
  * @author zhang ziliang (ziliangzhang@bupt.edu.cn)
  * @brief 平面最近点对算法
- * @version 0.1
  * @date 2023-11-23
  */
 #include <iostream>
