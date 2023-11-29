@@ -17,7 +17,7 @@ struct message
 int main()
 {
     key_t key = ftok(".", 'a');
-    int msgid = msgget(key, 0666); // get the message queue id
+    int msgid = msgget(key, IPC_CREAT | 0666); // get the message queue id
     if (msgid == -1)
     {
         perror("msgget");
