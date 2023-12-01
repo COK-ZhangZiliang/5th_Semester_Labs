@@ -1,7 +1,7 @@
 /**
  * @file LCS_1.cpp
  * @author zhang ziliang (ziliangzhang@bupt.edu.cn)
- * @brief 朴素版本
+ * @brief 朴素版本最长公共子序列算法
  * @date 2023-11-30
  */
 #include <iostream>
@@ -13,8 +13,8 @@ using namespace std;
 
 const int MAX_SIZE = 2000;
 
-int c[MAX_SIZE][MAX_SIZE];
-int b[MAX_SIZE][MAX_SIZE];
+int c[MAX_SIZE][MAX_SIZE]; // c[i][j]表示序列Xi和Yj的最长公共子序列的长度
+int b[MAX_SIZE][MAX_SIZE]; // b[i][j]记录c[i][j]的值是由哪一个子问题的解得到的
 
 // 求最长公共子序列的长度
 void LCSLength(int m, int n, char *x, char *y)
