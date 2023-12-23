@@ -145,6 +145,7 @@ void BranBoundTSP()
         q.pop();
         if (t.path.size() == n - 1) // 已经找到 n - 1 个点
         {
+            L++;
             double lb_min; // 记录当前lb的最小值
             for (int i = 1; i <= n; i++)
             {
@@ -264,7 +265,7 @@ void PrintResult(int num)
 
 int main()
 {
-    n = 30;
+    n = 22;
     if (!ReadData())
         return 1;
     startTime = clock();
